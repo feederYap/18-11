@@ -1,0 +1,39 @@
+<launch>
+  <arg name="x_pos" default="0.0"/>
+  <arg name="y_pos" default="0.0"/>
+  <arg name="z_pos" default="0.0"/>
+  <param name="/use_sim_time" value="true" />  
+  
+  
+
+  
+  
+  
+  <include file="$(find bingda_tutorials)/launch/gazebo_world.launch"/>
+
+
+ 
+  <param name="robot_description" command="$(find xacro)/xacro --inorder $(find bingda_tutorials)/urdf/mybot.xacro" />
+  <node pkg="gazebo_ros" type="spawn_model" name="spawn_urdf" args="-urdf -model mybot.xacro -x $(arg x_pos) -y $(arg y_pos) -z $(arg z_pos) -param robot_description" />
+ 
+  
+  <param name="robot_description1" command="$(find xacro)/xacro --inorder $(find bingda_tutorials)/urdf/book1.xacro" />
+  <node pkg="gazebo_ros" type="spawn_model" name="spawn_urdf_1" args="-urdf -model book1.xacro -x $(arg x_pos) -y $(arg y_pos) -z $(arg z_pos) -param robot_description1" />
+
+
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" />
+  
+    <node pkg="bingda_tutorials"
+  	name="world_to_ros"
+  	type="world_to_ros.py" output="screen">
+  </node>
+  	<node pkg="tf"
+  		type="static_transform_publisher"
+        	name="map1_to_odom_publisher"
+        	args="0 0 0 0 0 0 map odom_sim 100" />
+        <node pkg="tf"
+                type="static_transform_publisher"
+                name="base_link_to_antenna_publisher1"
+                args="0.12 0 -0.11 0 0 0 base_link_sim antenna_1 100" />
+
+</launch>
